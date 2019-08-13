@@ -1,0 +1,105 @@
+{% extends 'home.html' %}
+{% block main %}
+    <div class="container">
+        <br>
+        <br>
+        <h2 style="text-align: center">{{ author.name }}</h2>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <ul class="media-list">
+                    <li class="media">
+                        <div class="media-left" style="width: 20%;height: 100%">
+                            <img class="media-object" src="/{{ author.image }}" alt="...">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="media-body">
+                            <p>
+                            <h3>{{ author.info }}</h3>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <hr style="background-color:black;;height:1px;border:none;">
+                        <br>
+                        <br>
+                        <div class="meta abstract" style="overflow: hidden;">
+                            <h4><b class="meta abstract" style="line-height: 12px;">作者著作</b></h4>
+                        </div>
+                    </li>
+                    <br>
+                    <br>
+                    <li>
+                        {% for book in author.book_detail %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="item-root" style="width: 150px;height: 200px">
+                                        <img src="/static/{{ book.image }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <br>
+                                    <br>
+                                    <div class="detail">
+                                        <b class="title"><a href="/book/detail/{{ book.id }}">{{ book.name }}</a></b>
+                                        <h5 class="meta abstract">
+                                            <img src="/static/img/other/stars.png" style="width: 20px;height: 20px">
+                                            <img src="/static/img/other/stars.png" style="width: 20px;height: 20px">
+                                            <img src="/static/img/other/stars.png" style="width: 20px;height: 20px">
+                                            <img src="/static/img/other/stars.png" style="width: 20px;height: 20px">
+                                            {{ book.stars }}分</h5>
+                                        <h5 class="meta abstract"> {{ book.publishers }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+
+                {% for book in author.book_detail %}
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endblock %}
+

@@ -1,0 +1,286 @@
+{% extends 'home.html' %}
+{% block main %}
+    <link rel="stylesheet" href="/static/css/shop.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <div class="container" style="margin-top: 200px;margin-bottom: 500px">
+        <div class="row">
+            <ul class="cart_list_th clearfix">
+                <li class="col01" style="text-align: left;margin-left: 1%"><span style="left: 0">全选</span></li>
+                <li class="col01">书本名称</li>
+                <li class="col02">书本图片</li>
+                <li class="col03">租借价格</li>
+                <li class="col04">租借数量</li>
+                <li class="col05">借阅天数</li>
+                <li class="col06">其他操作</li>
+            </ul>
+            {% for book in rent %}
+                <ul class="cart_list_td clearfix" id="{{ book.book.id }}">
+                    <li class="col01" style="margin:1px auto">
+                        <input id=d{{ forloop.counter0 }} class="sum"
+                               onclick="funa({{ book.book.id }},{{ book.amount }},{{ book.book.price }},{{ book.max_time }})"
+                               type="checkbox" name>
+                    </li>
+                    <li class="col03"></li>
+                    <li class="col04">{{ book.book.name }}</li>
+                    <li class="col02"><img src="/static/{{ book.book.image }}"></li>
+                    <li class="col05">{{ book.book.price }}元/天</li>
+                    <li class="col06">
+                        <div class="num_add">
+                            <a onclick="subtraction(1,{{ book.book.id }},{{ book.book.price }},{{ book.amount }},{{ book.max_time }})"
+                               price="{{ book.book.price }}" class="add fl">+</a>
+                            <input id="{{ book.book.id }}" type="text" class="num_show fl" value="{{ book.amount }}"
+                                   disabled>
+                            <a onclick="subtraction(-1,{{ book.book.id }},{{ book.book.price }},{{ book.amount }},{{ book.max_time }})"
+                               price="{{ book.book.price }}" class="minus fl">-</a>
+                        </div>
+                    </li>
+                    <li class="col07">{{ book.max_time }}/天</li>
+                    <li class="col08"><a onclick="fun({{ book.book.id }})">删除</a></li>
+                </ul>
+            {% empty %}
+                <ul class="cart_list_td clearfix" id="{{ book.book.id }}">
+                    <li class="col01"><input id="id_book" onclick="is_select(7)" type="checkbox" name=""></li>
+                    <li class="col03"></li>
+                    <li class="col04">无数据</li>
+                    <li class="col02"><img src="/static/{{ book.book.image }}"></li>
+                    <li class="col05">无数据</li>
+                    <li class="col06">
+                        <div class="num_add">
+                            <a onclick="add_cart(7)" href="javascript:;" class="add fl">+</a>
+                            <input id="num_show_7" type="text" class="num_show fl" value="0">
+                            <a onclick="sub_cart(7)" href="javascript:;" class="minus fl">-</a>
+                        </div>
+                    </li>
+                    <li class="col07">0元</li>
+                    <li class="col08"><a href="">删除</a></li>
+                </ul>
+            {% endfor %}
+            <ul class="settlements">
+                <li class="col01"><input type="checkbox" name="" checked="" value=""></li>
+                <li class="col02">全选</li>
+                <li class="col03 money">
+                    合计(不含运费)：<span>¥</span><em id="ems">元</em><br>共计<b id="shop">0</b>件商品
+                </li>
+                <li class="col04"><a id="go_money">去结算</a></li>
+            </ul>
+            <form action="">
+                {% csrf_token %}
+            </form>
+        </div>
+
+    </div>
+    {% include 'footer.html' %}
+    <script>
+        let show = [];
+        let lis2 = [];
+
+        /* 用户点击小按钮的时候 */
+        function funa(a, b, c, d) {
+            /* 定义一个状态用来获取show中数据的索引 */
+            let ins = '123';
+            /* 判断show中是否有数据 */
+            show.forEach(function (element, index) {
+                if (element[0] == a) {
+                    ins = index;
+                }
+            });
+            let flag = false;
+            let ins2 = "123";
+            /* 通过循环lis2来拿到里面的数据，然后和用户传过来的数据进行对比，如果有说明用户点击的是取消 */
+            lis2.forEach(function (element, index) {
+                if (element[0] == a) {
+                    /* 取消的时候直接将数据移除 */
+                    lis2.splice(index, 1);
+                    flag = true;
+                }
+            })
+            /* 选中状态 */
+            if (!flag) {
+                /* 对show返回的ins进行判断，看show中是否有值 */
+                if (ins === "123") {
+                    /* show没有值，直接当前lis2添加就好  书id,书amount,书money,书租借天数 */
+                    lis2.push([Number(a), Number(b), Number(c), Number(d)]);
+                }
+                /* 说明show中有值，那么就将show中的值同步到lis2中，通过show的索引拿到show的数据，lis2直接添加 */
+                else {
+                    lis2.push(show[ins]);
+                }
+            }
+            /* 调用数据渲染的方法，直接渲染数 */
+            count()
+        }
+
+        /* 页面数据渲染的方法 */
+        let count = function () {
+            let sum = 0;
+            let amount = 0;
+            /*
+            页面数据渲染的时候，去lis2中找到数据，然后将数据循环出来，之后进行加减，lis2中的数据是用户点击的
+            每一次的数据，点击一次就保存一次，或者取消一次
+           */
+            lis2.forEach(function (element, index) {
+                /* cc是单个书本的总金额 -id,money,amount,time */
+                cc = Number(element[1]) * Number(element[2])*Number(element[3]);
+                /* sum是所有数据的金额 */
+                sum += cc;
+                /* 这个是所有的数据的个数 */
+                amount += Number(element[1])
+            });
+            /* 然后找到这个标签，将数据渲染到对应的页面 */
+            $(' #ems').html(sum);
+            $('#shop').html(amount)
+        };
+
+        /* 加减算法的方法，参数分别是增量，id，价格，数量，天数*/
+        function subtraction(a, b, c, d, e) {
+            let flag = false;
+            /* 是否选中状态 */
+            let ind = '';
+            /* 存储选中状态的索引 */
+            /*
+             第一步，先找到我要渲染的那个标签，因为是动态的，所以不能写死，所以我用到了字符串的替换
+             $('#%s'.replace('%s',b)) 后面的数据是我要替换的那个东西的id，这样子就可以做到动态的查找标签
+             */
+            let xxx = $("#%s".replace('%s', b));
+            /* 第二步，判断我存储用户点击数据的数组中是否有当前的id，定义两个变量用来接收选中状态和数据的索引*/
+            /* a增量，bid，c价格，d数量，e天数 */
+            lis2.forEach(function (element, index) {
+                if (element[0] == b) {
+                    flag = true;
+                    ind = index
+                }
+            });
+            /* 用户不在选中状态，直接修改show中的数据 */
+            if (!flag) {
+                /* 找到当前的那个input框的数据 */
+                current_num = xxx.val();
+                /* 让当前页面的数据+-用户点击的按钮，将结果给result这个变量存储 */
+                /* 最终数量 */
+                let result = Number(current_num) + Number(a);
+                /*
+                 result的结果有两种，第一种有值，第二种为0，为0的时候直接给用户弹出一个事件，告诉用户
+                 数据最少是1，然后直接结束掉
+                */
+                if (!result) {
+                    swal('数量最小为1！')
+                    return
+                }
+                /* 否则的话，将当前的数据直接渲染到页面上，让用户看 */
+                xxx.val(result);
+                /* 接下来就是存储数据到show和lis2中，先判断两个列表中是否已经有当前的数据 */
+                let flag4 = false;
+                /* show的格式[id,amount,price] */
+                show.forEach(function (element, index) {
+                    /* 说明有这个数据，直接将他的数量更新 */
+                    if (element[0] == b) {
+                        /*？？？*/
+                        element[1] = result;
+                        flag4 = true
+                    }
+                });
+                /* 这个是说明show里面没有当前用户点击的数据，那么就直接存储
+                书id,书amount,书money,书租借天数
+                a,bid，c价格，d数量，e天数
+                 */
+                if (!flag4) {
+                    show.push([Number(b), result, Number(c),Number(e)])
+                }
+            }
+            /* 用户在选中状态 */
+            else {
+                /* 获取当前页面的数据 */
+                current_num = xxx.val();
+                /* 用户点击后的最终数量 */
+                let result = Number(current_num) + Number(a);
+                /* 对最终数量进行判断 */
+                if (!result) {
+                    swal('数量最小为1！');
+                    return
+                }
+                /* 渲染到页面 */
+                xxx.val(result);
+                let flag2 = false;
+                /* 判断show中是否有这个数据 */
+                /* 判断我的show中是否有当前这个数据 */
+                show.forEach(function (element, index) {
+                    if (element[0] == b) {
+                        /* 有的时候，直接将最后的数据给show/ */
+                        show[index][1] = result;
+                        flag2 = true
+                    }
+                });
+                /* 没有数据的时候，将数据添加到show中 */
+                if (!flag2) {
+                    show.push([Number(b), result, Number(c),Number(e)]);
+                }
+                /* show中有数据，将数据给lis2,让他渲染，因为我在选中状态 */
+                lis2[ind][1] = result;
+                /* 调用渲染数据的方法 */
+                count()
+            }
+        }
+
+        /* 删除事件 */
+        function fun(a) {
+            swal({
+                title: "确定删除?",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    let str = '';
+                    {#this.addClass("hidden")#}
+                    if (willDelete) {
+                        console.log(a)
+                        /* 向后端发送数据，得用Ajax不然无法发送 */
+                        $.ajax({
+                            url: '/user/rent/delete/?id=' + a,
+                            success: function (data) {
+                                {#$("#%s".replace("%s",a)).addClass("hidden")#}
+                                {# 移除标签 #}
+                                lis2.forEach(function (element, index) {
+                                    {#console.log(element,element[0],a)#}
+                                    if (element[0] == data.book_id) {
+                                        lis2.splice(index, 1)
+                                    }
+                                });
+                                count()
+                                /* 找到标签直接删除，不能直接删除，因为找不到标签 */
+                                $("#%s".replace("%s", a)).remove()
+                            }
+                        })
+                    }
+                });
+        }
+
+        /* 结算事件 */
+        $('#go_money').on('click', function () {
+            let cartId = '';
+            let bookAmount = '';
+            lis2.forEach(function (element, index) {
+                if (element) {
+                    //console.log(element)
+                    //console.log(element[0], element[1])
+                    cartId = cartId+element[0]+','
+                    bookAmount = bookAmount+element[1]+','
+                }
+            });
+            //console.log(cartId);
+            //console.log(bookAmount);
+            $.ajax({
+                url: '/user/settle/',
+                type: 'post',
+                data: {
+                    'cartId': cartId,
+                    'bookAmount': bookAmount,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    //alert('hahaha')
+                    console.log(data)
+                    window.location.href = data.url+'?cartId='+cartId
+                }
+            })
+        })
+    </script>
+{% endblock %}

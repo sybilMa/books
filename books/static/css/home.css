@@ -1,0 +1,82 @@
+
+/* 去掉a标签默认的下划线 */
+a{text-decoration:none;}
+.carousel-inner img {
+
+    background-size: cover;
+    float: left;
+    width: 460px;
+    height: 500px!important;
+}
+
+.carousel-inner {
+    width: 1380px;
+    height: 500px;
+    overflow: hidden;
+    /*margin: 360px auto;*/
+}
+
+/*左侧样式开始*/
+.blog-left {
+    width:15%;
+    height:100%;
+    position:fixed;
+    top:113px;
+    left:0;
+    background-color: rgb(254,194,190);
+    float:left;
+    margin-top: -61px;
+}
+/*圆形头像样式*/
+.left-avatar {
+    width:150px;
+    height:150px;
+    overflow:hidden;
+    border: 3px solid wheat;
+    border-radius: 50%;
+    margin: 10px auto;
+}
+.left_name,.left-signature {
+    color: white;
+    text-align: center;
+}
+
+.left-info,.left-lang {
+    text-align: center;
+    margin-top:60px;
+    color: navajowhite;
+}
+.left-info li:hover,.left-lang li:hover {
+    color: darkgreen;
+}
+body {
+    /*background-color: #8a6d3b;*/
+    margin: 0;
+}
+a {
+    text-decoration: none;
+}
+a {
+    text-decoration: none;
+}
+img {
+    width: 100%;
+}
+ul {
+    list-style-type: none;
+    padding:0;
+}
+
+/*.carousel-indicators{*/
+/*width: 500px;*/
+/*height: 500px;*/
+/*overflow: hidden;*/
+/*}*/
+
+
+ /* 滚动 */
+.mrq:hover {
+    box-shadow: 1px 0 20px #518391;
+    margin-top: -5px;
+}
+

@@ -1,0 +1,40 @@
+{% extends 'home.html' %}
+{% block main %}
+    <div class="container" style="margin-top: 100px;margin-bottom: 400px">
+        <br>
+        <br>
+        <h2 style="text-align: center">预约书籍页面</h2>
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>预约序号</th>
+                        <th>预约书籍</th>
+                        <th>预约数量</th>
+                        <th>预约总价格</th>
+                        <th>预约时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr class="success">
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.book.name }}</td>
+                            <td>{{ order.amount }}</td>
+                            <td>{{ order.amount }}*{{ order.book.price }}</td>
+                            <td>{{ order.order_time |date:'Y-m-d' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% include 'footer.html' %}
+    </div>
+
+{% endblock %}

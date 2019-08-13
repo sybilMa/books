@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>亦书</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    {% block css %}
+
+    {% endblock %}
+    <style>
+        a {
+            color: black;
+        }
+        .func{
+            background-color: skyblue;
+        }
+        #id_img {
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse" style="position: fixed;left: 0;right: 0;top: 0;z-index: 999999">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/home/">亦书</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="position: relative">
+            <form class="navbar-form navbar-left" method="get" action="/book/search/" target="_self">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="书名" name="q">
+                </div>
+                <input type="submit" class="btn btn-default" value="查询">
+            </form>
+            <div style="margin-left: 350px;margin-top: 15px">
+                <img src="/static/img/other/home.png" alt="" style="width: 20px;height: 20px">&nbsp;&nbsp;
+                <a href="/" style="color: white; font-size: 18px">首页</a>
+            </div>
+            <marquee behavior="" direction="" width="400px" height="40px" scrollamount="5px"
+                     style="margin-left:300px;padding-top: -5px;margin-top: -24px;position: absolute;">
+                <span style="font-size:18px;color: white">
+                    愿用我的倾城时光与你共享每一天的每一刻的心情😊😊😊
+                </span>
+            </marquee>
+            <ul class="nav navbar-nav navbar-right" style="position: absolute;margin-left:1600px;margin-top: -40px">
+                {% if request.user.is_authenticated %}
+                    <li style="margin-right:10px"><a href="/">{{ request.user.username }}</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true"
+                           aria-expanded="false">下拉加载更多<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/user/password/">修改密码</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/user/logout/">注销</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="/user/register/">注册</a></li>
+                    <li><a href="/user/login/">登录</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid" style="background-color: #F6EED4">
+    <div class="row">
+        {#    用户信息开始 #}
+        <form action="">
+            {% csrf_token %}
+        </form>
+        <div class="col-md-2 clearfix">
+            <div class="blog-left" style="background-color: rgb(254,194,190)">
+                {% if request.user.is_authenticated %}
+                    <!--头像开始-->
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="left-avatar">
+                        <label for="myfile" style="width: 100%;height: 100%">头像
+                            <img src="/media/{{ request.user.avatar }}" id="id_img"
+                                 style="width: 100%;margin-top: -20px ">
+                        </label>
+                        <input type="file" id="myfile" class="form-control" style="display: none; " name="myfile">
+                    </div>
+                    <p>
+                        <button id="id_button" class="btn btn-success" style="margin-left: 99px;">修改头像</button>
+                    </p>
+                    {#                    </from>#}
+                    <!--头像结束-->
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="left-signature">
+                        <span style="color: black">
+                            <span class="tag-info">{{ request.user.info }}</span>
+                            <input class="hidden" type="text" id="u_info" value="{{ request.user.info }}"
+                                   style="border: none ; color: black" name="user_info">
+                            <a style="margin-left: 10px; color: yellowgreen" href="#" id="edit_tag">编辑</a>
+                        </span>
+                    </div>
+                    <!--个人信息开始-->
+                    <div class="left-info ">
+                        <p ><a href="/user/order?style=1" class="list-group-item {{ class1 }}"><span class="mrq" >预约订单<img src="/static/img/other/order.png"
+                                                          style="width: 30px;height: 30px;"></span></a></p>
+                        <p ><a href="/user/rent?style=2" class="list-group-item {{ class2 }}"><span class="mrq">租借订单<img src="/static/img/other/rent.png"
+                                                          style="width: 30px;height: 30px;"></span></a></p>
+                        <p ><a href="/user/message?style=3" class="list-group-item {{ class3 }}"><span class="mrq">我的信息<img src="/static/img/other/message.png"
+                                                          style="width: 30px;height: 30px;"></span></a></p>
+                        <p ><a href="/user/shop?style=4" class="list-group-item {{ class4 }}"><span class="mrq">购物车<img src="/static/img/other/cart.png"
+                                                          style="width: 30px;height: 30px;"></span></a></p>
+                    </div>
+                {% else %}
+                    <div class="left-avatar" style="margin-top: 100px">
+                        <img src="/static/img/name.png" alt="">
+                    </div>
+                    <div class="left_name" style="margin-top: 50px"><a href="/user/login/">点击登录<img src="/static/img/other/zj.png"
+                                                          style="width: 30px;height: 30px;"></a></div>
+                    <div class="left-signature" style="margin-top: 50px"><a href="/user/rent">我的信息<img src="/static/img/other/message.png"
+                                                          style="width: 30px;height: 30px;"></a></div>
+                    <div class="left-signature" style="margin-top: 50px"><a href="/user/shop">购物车<img src="/static/img/other/cart.png"
+                                                          style="width: 30px;height: 30px;"></a></div>
+                {% endif %}
+            </div>
+        </div>
+        {#    用户信息结束 #}
+        {% block main %}
+            <br>
+    <br>
+    <div class="clearfix">
+        <div class="hot" style="margin-left: 1000px; font-size: 30px;margin-top:35px">
+            <p> 热门推荐</p>
+        </div>
+        <hr style="background-color:yellowgreen;;height:1px;border:none;">
+        {#    轮播图开始 #}
+        <div class="col-md-9 " style="margin-left: 400px">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox" style="margin-left: 60px ">
+                    <div class="item active">
+                        {% for book1 in i %}
+                            <a href="/book/detail/{{ book1.id }}"><img src="/static/{{ book1.image }}"></a>
+                        {% endfor %}
+                    </div>
+                    <div class="item ">
+                        {% for book2 in m %}
+                            <a href="/book/detail/{{ book2.id }}"><img src="/static/{{ book2.image }}"></a>
+                        {% endfor %}
+                    </div>
+                    <div class="item ">
+                        {% for book3 in n %}
+                            <a href="/book/detail/{{ book3.id }}"><img src="/static/{{ book3.image }}"></a>
+                        {% endfor %}
+                    </div>
+                    <div class="item ">
+                        {% for book4 in p %}
+                            <a href="/book/detail/{{ book4.id }}"><img src="/static/{{ book4.image }}"></a>
+                        {% endfor %}
+                    </div>
+                    <div class="item ">
+                        {% for book5 in q %}
+                            <a href="/book/detail/{{ book5.id }}"><img src="/static/{{ book5.image }}"></a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        {#    轮播图结束 #}
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    {# 分类页开始 #}
+    <div>
+        <div class="cat col-md-offset-2 " style="text-align: center; font-size: 30px">
+            {% for category in category_list %}
+                <a href="/book/category/{{ category.id }}">{{ category.names }}</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            {% endfor %}
+        </div>
+        <br>
+        <hr style="background-color:yellowgreen;;height:1px;border:none;">
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-9">
+                {% for foo in x %}
+                    <div class="col-sm-6 col-md-2 col-md-offset-1 mrq">
+                        <div class="thumbnail">
+                            <img src="/static/{{ foo.image }}" style="height: 200px; width: 100%; display: block;">
+                            <div class="caption">
+                                <h3>{{ foo.name|truncatechars:5 }}</h3>
+                                <p>{{ foo.bookdetail.desc|truncatechars:6 }}</p>
+                                <p>&nbsp;&nbsp;
+                                    <a class="btn btn-default" onclick="funk({{ foo.id }})"
+                                            role="button"><img src="/static/img/other/cart.png"
+                                                               style="width: 30px;height: 30px;">
+                                    </a>
+{#                                    <a class="btn btn-default" href="/book/shop/{{ foo.id }}"#}
+{#                                            role="button"><img src="/static/img/other/cart.png"#}
+{#                                                               style="width: 30px;height: 30px;">#}
+{#                                    </a>#}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="/book/buy/{{ foo.id }}" class="btn btn-default" style="color: red"
+                                       role="button"><img src="/static/img/other/buy.png"
+                                                          style="width: 30px;height: 30px;"></a>
+                                </p>
+                                <p>&nbsp;&nbsp;
+                                    <a href="/book/rent/{{ foo.id }}" class="btn btn-primary" role="button">借阅</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="/book/detail/{{ foo.id }}" class="btn btn-default" role="button">详情</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    {# 分类页结束  #}
+    {# 标签页开始   #}
+    <div>
+        <div class="category col-md-offset-2" style="text-align: center; font-size: 30px">
+            {% for tag in tags_list %}
+                <a href="/book/tag/{{ tag.id }}">{{ tag.names }}</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            {% endfor %}
+        </div>
+        <br>
+        <hr style="background-color:yellowgreen;;height:1px;border:none;">
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-9">
+                {% for book in d %}
+                    <div class="col-sm-6 col-md-2 col-md-offset-1 mrq">
+                        <div class="thumbnail">
+                            <img src="/static/{{ book.image }}" style="height: 200px; width: 100%; display: block;">
+                            <div class="caption">
+                                <h3>{{ book.name | truncatechars:5 }}</h3>
+                                <p>{{ book.bookdetail.desc|truncatechars:10 }}</p>
+                                 <p>&nbsp;&nbsp;
+                                    <a class="btn btn-default" onclick="funk({{ book.id }})"
+                                            role="button"><img src="/static/img/other/cart.png"
+                                                               style="width: 30px;height: 30px;">
+                                    </a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="/book/buy/{{ book.id }}" class="btn btn-default" style="color: red"
+                                       role="button"><img src="/static/img/other/buy.png"
+                                                          style="width: 30px;height: 30px;"></a>
+                                </p>
+{#                                <p>&nbsp;&nbsp;#}
+{#                                    <a href="/book/shop/{{ book.id }}" class="btn btn-default"#}
+{#                                       role="button"><img src="/static/img/other/cart.png"#}
+{#                                                          style="width: 30px;height: 30px;"></a>#}
+{#                                    <a class="btn btn-default" role="button" onclick="fun({{ book.id }}">#}
+{#                                        <img src="/static/img/other/cart.png"style="width: 30px;height: 30px;"></a>#}
+{#                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#}
+{#                                    #}
+{#                                </p>#}
+                                <p>&nbsp;&nbsp;
+                                    <a href="/book/rent/{{ book.id }}" class="btn btn-primary" role="button">借阅</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="/book/detail/{{ book.id }}" class="btn btn-default" role="button">详情</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {#  标签页结束 #}
+    <form action="">
+        {% csrf_token %}
+    </form>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div>
+        <div class="category col-md-offset-1" style="text-align: center; font-size: 30px">
+            <p >人气作家</p>
+        </div>
+        <br>
+        <hr style="background-color: yellowgreen;height:1px;border:none;">
+        <br>
+        <div class="row">
+            <div class="col-md-2"></div>
+            {# 作家页面开始 #}
+            <div class="col-md-9">
+                {% for author in author_list %}
+                    <div class="col-sm-6 col-md-2 col-md-offset-1 mrq">
+                        <div class="thumbnail">
+                            <img src="/{{ author.image }}" style="height: 200px; width: 100%; display: block;">
+                            <div class="caption">
+                                <h3>{{ author.name }}</h3>
+                                <p>{{ author.info|truncatechars:15 }}</p>
+                                <p>
+                                    {#<a href="/book/author/{{ author.id }}" class="btn btn-primary" role="button">详情</a>#}
+                                    <a href="/book/book/{{ author.id }}" class="btn btn-default" role="button">作者书籍<img
+                                            src="/static/img/other/book.png"
+                                            style="width: 30px;height: 30px;"></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {# 作家页面结束 #}
+        </div>
+    </div>
+    {% include 'footer.html' %}
+        {% endblock %}
+
+    </div>
+
+</body>
+
+{% block js %}
+
+<script>
+
+console.log(123)
+    // 这个是当前用户信息编辑页面的替换，添加属性和移除属性
+    $("#edit_tag").click(function () {
+        $("#u_info").removeClass("hidden");
+        $(".tag-info").addClass("hidden");
+        // 这一步就是让我的鼠标必须放在input框中，只要一移开就会直接显示下面的释放焦点事件
+        $("#u_info").focus();
+    });
+
+    // 这个就是先绑定释放焦点事件，然后用Ajax发送请求
+    $("#u_info").blur(function () {
+        $("#u_info").addClass("hidden");
+        $(".tag-info").removeClass("hidden")
+        $.ajax({
+            url: '/user/info/',
+            type: 'post',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'userinfo': $('#u_info').val()
+            },
+            success: function (data) {
+                // 让用户修改的信息直接显示，不用刷新页面
+                $('.tag-info').html($('#u_info').val())
+            }
+        })
+    });
+
+
+    $('#myfile').change(function () {
+        let fileObj = this.files[0];  // 当前input框的文件对象
+        let fileReader = new FileReader();
+        fileReader.readAsDataURL(fileObj);
+        fileReader.onload = function () {
+            $('#id_img').attr('src', fileReader.result)
+        }
+    });
+
+    //用Ajax传文件的时候普通数据的添加
+    $('#id_button').click(function () {
+        // 文件上传的话先有一个formdta
+        let formData = new FormData();
+        //formObj = formData.append('myfile',)
+        // console.log($('#myform').serializeArray())
+        //手动添加文件对象
+        formData.append('myfile', $('#myfile')[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        console.log(formData.get('myfile'));
+
+        $.ajax({
+            url: '/user/avatar/',
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+                window.location.href = '/'
+
+            }
+
+
+        })
+
+    });
+
+    funk = function (id) {
+        $.ajax({
+            url: '/book/shop/' + id+"/",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (data) {
+                if(data.start==302){
+                    window.location.href = data.url
+                }
+                console.log(data.msg)
+            }
+        })
+    };
+</script>
+{% endblock %}
+
+</html>

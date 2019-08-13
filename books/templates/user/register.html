@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta http-equiv="content-Type" charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'sweetalert-1.1.3/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="particles-js">
+    <div class="login">
+
+        <div action="" method="post">
+            {% csrf_token %}
+            <div class="login-top">
+                <a href="javascript:;" onclick="javascript:history.back(-1)">
+                    <img src="/static/img/his.png" alt="">
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                欢迎注册
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img"><img src="{% static 'img/name.png' %}"></div>
+                <div class="login-center-input">
+                    <input type="text" id="username" value="" placeholder="手机号" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='手机号'">
+                    <div class="login-center-input-text">用户名</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img"><img src="{% static 'img/password.png' %}"></div>
+                <div class="login-center-input">
+                    <input type="password" id="password" value="" placeholder="请输入您的密码" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='请输入您的密码'">
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img"><img src="{% static 'img/password.png' %}"></div>
+                <div class="login-center-input">
+                    <input type="password" id="confirm_password" value="" placeholder="再次输入您的密码" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='再次输入您的密码'">
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img">
+                    <img src="/static/img/kefu.png" alt="">
+                </div>
+                <div class="login-center-input">
+                    &nbsp;&nbsp;&nbsp;<div class="btn btn-success" id="send-msg" >短信验证码注册</div>
+                    <div class="login-center-input-text">短信</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                {#                <div class="login-center-img"><img src="https://pic.cnblogs.com/avatar/1635121/20190606082017.png"></div>#}
+                <div class="login-center-img">
+                    <img src="/static/img/2222.jpg" alt="">
+                    {#                  <img src="{% static 'img/password.png' %}">#}
+                </div>
+                <div class="login-center-input">
+                    <input type="text" id="msg" value="" placeholder="请输入验证码" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='请输入验证码'">
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <p style="color: red;text-align: center">{{ err_msg }}</p>
+            <div style="text-align: center">
+                <button class="register-button"
+                        style="cursor:pointer;width:250px;text-align:center;height:40px;
+                        line-height:40px;background-color:#1e90ff;border-radius:5px;margin:0 auto;color:#fff">
+                    注册
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="sk-rotating-plane"></div>
+    <canvas class="particles-js-canvas-el" width="1343" height="202" style="width: 100%; height: 100%;"></canvas>
+</div>
+
+<script src="{% static 'js/particles.min.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+{#<script src="/static/js/register.js"></script>#}
+<script>
+
+    $('#send-msg').on('click',function () {
+        {#alert(123)#}
+        $.ajax({
+            url: '/home/msg/',
+            type:'post',
+            data:{
+                'username':$('#username').val(),
+                 'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+            },
+            success:function (data) {
+                if (data.start==100){
+                    console.log(data.msg)
+                }
+                else{
+                    console.log(data.msg)
+                }
+            }
+          })
+    })
+
+    $('.register-button').on('click',function () {
+        console.log($('#username').val());
+        $.ajax({
+            url: '/user/register/',
+            type:'post',
+            data:{
+                'username':$('#username').val(),
+                'password':$('#password').val(),
+                'confirm_password': $('#confirm_password').val(),
+                'msg':$('#msg').val(),
+                'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),
+            },
+            success:function (data) {
+                if(data.start===100){
+                    console.log(data.msg)
+                    window.location.href=data.url
+                }
+                else{
+                    console.log($('#id_err').html(data.msg))
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

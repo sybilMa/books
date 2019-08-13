@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta http-equiv="content-Type" charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'sweetalert-1.1.3/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div id="particles-js">
+    <div class="login">
+
+        <div action="" method="post">
+
+            {% csrf_token %}
+            <div class="login-top">
+                <a href="javascript:;" onclick="javascript:history.back(-1)">
+                    <img src="/static/img/his.png" alt="">
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欢迎登录
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img"><img src="{% static 'img/name.png' %}"></div>
+                <div class="login-center-input">
+                    <input type="text" id="username" value="" placeholder="用户名|手机号|邮箱" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='用户名|手机号|邮箱'">
+                    <div class="login-center-input-text">用户名</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img"><img src="{% static 'img/password.png' %}"></div>
+                <div class="login-center-input">
+                    <input type="password" id="password" value="" placeholder="请输入您的密码" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='请输入您的密码'">
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-input">
+                    <img src="/user/codes/" id="id_img">
+                </div>
+                {#                <div class="login-center-img"><img src="https://pic.cnblogs.com/avatar/1635121/20190606082017.png"></div>#}
+            </div>
+            <div class="login-center clearfix">
+                {#                <div class="login-center-img"><img src="https://pic.cnblogs.com/avatar/1635121/20190606082017.png"></div>#}
+                <div class="login-center-input">
+                    <input type="text" id="code" value="" placeholder="请输入验证码" onfocus="this.placeholder=''"
+                           onblur="this.placeholder='请输入验证码'">
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <p style="color: red;text-align: center" id="id_err">{{ err_msg }}</p>
+            <div style="text-align: center">
+                <button class="login-button">登录</button>
+            </div>
+        </div>
+    </div>
+    <div class="sk-rotating-plane"></div>
+    <canvas class="particles-js-canvas-el" width="1343" height="202" style="width: 100%; height: 100%;"></canvas>
+</div>
+
+<script src="{% static 'js/particles.min.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+{#<script src="/static/js/login.js"></script>#}
+<script>
+    $('#id_img').on('click', function () {
+        //alert(123)
+        let oldPath = $(this).attr('src');
+        $(this).attr('src', oldPath + '?')
+    });
+    $('.login-button').on('click', function () {
+        //alert(123)
+        $.ajax({
+            url: '/user/login/',
+            type: 'post',
+            data: {
+                'username': $('#username').val(),
+                'password': $('#password').val(),
+                'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                'code': $('#code').val()
+            },
+            success: function (data) {
+                {#console.log(data.msg)#}
+                if (data['start'] === 100) {
+                    console.log(data);
+                    window.location.href = data.url
+                }
+                else {
+                    {#$('p').text=data.msg#}
+                    console.log($('#id_err').html(data.msg))
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>
